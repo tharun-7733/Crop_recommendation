@@ -351,13 +351,27 @@ ul { list-style:none; }
 }
 .sol-card:hover { transform: translateY(-5px); box-shadow: 0 14px 48px rgba(0,0,0,.22); }
 .sol-card.dark { background: #1a1a1a; }
-.sol-card.tall { grid-row: span 2; }
+/* Tall card: left column, span both rows */
+.sol-card.tall {
+  grid-column: 1;
+  grid-row: 1 / span 2;
+}
+/* 2nd card: right column, top row */
+.solutions-bento .sol-card:nth-child(2) {
+  grid-column: 2;
+  grid-row: 1;
+}
+/* 3rd card: right column, bottom row */
+.solutions-bento .sol-card:nth-child(3) {
+  grid-column: 2;
+  grid-row: 2;
+}
 .sol-card-img {
   height: 200px;
   overflow: hidden;
   flex-shrink: 0;
 }
-.sol-card.tall .sol-card-img { height: 260px; }
+.sol-card.tall .sol-card-img { height: 280px; }
 .sol-card-img img { transition: transform .6s ease; }
 .sol-card:hover .sol-card-img img { transform: scale(1.06); }
 .sol-card-body {
