@@ -5,7 +5,7 @@ parameters, and returns recommended crops.
 """
 
 import os
-import pickle
+import joblib
 import pandas as pd
 import numpy as np
 from flask import Flask, request, jsonify
@@ -16,13 +16,10 @@ CORS(app)
 
 # ── Load model artifacts ────────────────────────────────────────────
 BASE = os.path.dirname(os.path.abspath(__file__))
-MODELS = os.path.join(BASE, "models")
+MODELS = os.path.join(BASE, "Crop_Model")
 
-with open(os.path.join(MODELS, "scaler.pkl"), "rb") as f:
-    scaler = pickle.load(f)
-
-with open(os.path.join(MODELS, "crop_clustering_model.pkl"), "rb") as f:
-    model = pickle.load(f)
+scaler = joblib.load(os.path.join(MODELS, "scaler.pkl"))
+model  = joblib.load(os.path.join(MODELS, "crop_clustering_model.pkl"))
 
 # ── Build cluster → crop mapping ────────────────────────────────────
 cluster_df = pd.read_csv(os.path.join(MODELS, "cluster_mapping.csv"))
