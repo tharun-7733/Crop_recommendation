@@ -17,17 +17,17 @@ document.addEventListener('DOMContentLoaded', () => {
   document.querySelectorAll('[data-reveal]').forEach(el => obs.observe(el));
 
   /* ── Navbar Scroll ── */
-  const navInner = document.getElementById('navInner');
-  window.addEventListener('scroll', () => {
-    if (!navInner) return;
-    if (window.scrollY > 60) {
-      navInner.style.background = 'rgba(13, 17, 23, 0.95)';
-      navInner.style.padding = '8px 18px';
-    } else {
-      navInner.style.background = 'var(--glass)';
-      navInner.style.padding = '10px 20px';
+  const navbar    = document.getElementById('navbar');
+  const navInner  = document.getElementById('navInner');
+  function onScroll() {
+    if (!navbar) return;
+    navbar.classList.toggle('scrolled', window.scrollY > 50);
+    if (navInner) {
+      navInner.style.padding = window.scrollY > 50 ? '8px 18px' : '10px 20px';
     }
-  }, { passive: true });
+  }
+  window.addEventListener('scroll', onScroll, { passive: true });
+  onScroll();
 
   /* ── Active Nav Link on Scroll ── */
   const sections = document.querySelectorAll('section[id]');

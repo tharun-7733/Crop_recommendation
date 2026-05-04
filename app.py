@@ -57,9 +57,8 @@ CROP_META = {
 SC_PROFILES = {
     0: {
         "name":        "Premium High-Performers",
-        "icon":        "💎",
         "color":       "#4caf50",
-        "label":       "Cluster 0",
+        "label":       "Tier 1",
         "desc":        "High price-per-kg with the highest revenue output. These are top-tier products that drive value despite potentially lower volume. Prioritize quality retention and premium market access.",
         "strategy":    "Quality-first, premium pricing",
         "inventory":   "Low — sell quickly at peak freshness",
@@ -76,12 +75,11 @@ SC_PROFILES = {
     },
     1: {
         "name":        "Overstock / Slow-Moving",
-        "icon":        "⚠️",
         "color":       "#ff9800",
-        "label":       "Cluster 1",
+        "label":       "Tier 2",
         "desc":        "High inventory ratio with low sell-through rate. These products are sitting in storage and tying up capital. Immediate action needed to reduce holding costs and free working capital.",
         "strategy":    "Volume reduction or aggressive promotion",
-        "inventory":   "High ⚠️ — capital is being tied up in unsold stock",
+        "inventory":   "High — capital is being tied up in unsold stock",
         "sell_through": "Low — products are moving slower than they arrive",
         "margin":      "Eroding (30–45%) due to holding costs",
         "channels":    ["Bulk processors", "Food industry buyers", "Wholesale mandis", "Government procurement"],
@@ -91,13 +89,12 @@ SC_PROFILES = {
             "Explore processing channels (e.g., flour mills, canneries) for unsold produce",
             "Negotiate flexible offtake agreements instead of fixed-volume contracts"
         ],
-        "warning": "⚠️ High inventory levels detected. Consider promotional strategies or supply reduction to free capital."
+        "warning": "High inventory levels detected. Consider promotional strategies or supply reduction to free capital."
     },
     2: {
         "name":        "Fast-Moving Essentials",
-        "icon":        "⚡",
         "color":       "#2196f3",
-        "label":       "Cluster 2",
+        "label":       "Tier 3",
         "desc":        "High sell-through rate with low inventory ratio. These are efficient, high-turnover products being sold almost as fast as they are shipped — a sign of strong market demand.",
         "strategy":    "Scale up supply and secure reliable offtake",
         "inventory":   "Low — stock moves fast, minimal holding costs",
@@ -173,27 +170,59 @@ def predict():
 
 @app.route("/supply-chain", methods=["POST"])
 def supply_chain():
-    """Supply chain profile using KMeans clustering."""
+    """
+    Supply chain profile from 4 business inputs.
+    Cluster assignment mirrors the KMeans training analysis:
+      - Cluster 0 (Premium):    High price_per_kg + High revenue
+      - Cluster 1 (Overstock):  High inventory_ratio + Low sell_through_rate
+      - Cluster 2 (Fast-Moving):High sell_through_rate + Low inventory_ratio
+    """
     try:
-        data     = request.get_json(force=True)
-        features = extract_features(data)
-        scaled   = sc_scaler.transform(features)
-        cluster  = int(sc_model.predict(scaled)[0])
-        profile  = SC_PROFILES.get(cluster, SC_PROFILES[0])
+        data = request.get_json(force=True)
+
+        price        = float(data["price_per_kg"])        # Rs per kg
+        sell_through = float(data["sell_through_rate"])   # 0.0 – 1.0
+        inventory    = float(data["inventory_ratio"])     # ratio (>1 = excess stock)
+        revenue      = float(data["revenue"])             # total revenue (Rs)
+
+        # ── Scoring: each cluster gets a score; highest wins ─────────────
+        # Cluster 1 (Overstock): high inventory + low sell-through dominate
+        score_overstock  = (inventory / 5.0) + (1.0 - sell_through)
+
+        # Cluster 2 (Fast-Moving): high sell-through + low inventory dominate
+        score_fast       = sell_through + (1.0 - min(inventory / 5.0, 1.0))
+
+        # Cluster 0 (Premium): high price + high revenue dominate
+        # Normalise price to 0–1 using typical range 0–500 Rs/kg
+        # Normalise revenue to 0–1 using typical range 0–500000 Rs
+        score_premium    = (min(price, 500) / 500.0) + (min(revenue, 500_000) / 500_000.0)
+
+        scores = {0: score_premium, 1: score_overstock, 2: score_fast}
+        cluster = max(scores, key=scores.get)
+        profile = SC_PROFILES[cluster]
 
         return jsonify({
             "success": True,
             "cluster": cluster,
             "profile": profile,
+            "scores":  {k: round(v, 4) for k, v in scores.items()},
+            "inputs": {
+                "price_per_kg":       price,
+                "sell_through_rate":  sell_through,
+                "inventory_ratio":    inventory,
+                "revenue":            revenue,
+            }
         })
 
+    except KeyError as ke:
+        return jsonify({"success": False, "error": f"Missing field: {ke}"}), 400
     except Exception as e:
         return jsonify({"success": False, "error": str(e)}), 400
 
 
 @app.route("/health", methods=["GET"])
 def health():
-    return jsonify({"status": "ok", "models": ["RandomForest", "KMeans"]})
+    return jsonify({"status": "ok", "models": ["RandomForest", "supply-chain-classifier"]})
 
 
 if __name__ == "__main__":
