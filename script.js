@@ -1,77 +1,108 @@
+/* script.js – Global Interactions */
 document.addEventListener('DOMContentLoaded', () => {
 
-  /* ── Hamburger menu ── */
-  const hamburger = document.getElementById('hamburger');
-  const navDrawer = document.getElementById('navDrawer');
-
-  hamburger?.addEventListener('click', () => {
-    const open = navDrawer.classList.toggle('open');
-    const s = hamburger.querySelectorAll('span');
-    if (open) {
-      s[0].style.transform = 'translateY(7px) rotate(45deg)';
-      s[1].style.opacity = '0';
-      s[2].style.transform = 'translateY(-7px) rotate(-45deg)';
-    } else {
-      s.forEach(el => { el.style.transform = ''; el.style.opacity = ''; });
-    }
-  });
-
-  navDrawer?.querySelectorAll('a').forEach(a => {
-    a.addEventListener('click', () => {
-      navDrawer.classList.remove('open');
-      hamburger.querySelectorAll('span').forEach(el => { el.style.transform = ''; el.style.opacity = ''; });
+  /* ── Cursor Glow ── */
+  const cursor = document.getElementById('cursorGlow');
+  if (cursor) {
+    document.addEventListener('mousemove', e => {
+      cursor.style.left = e.clientX + 'px';
+      cursor.style.top  = e.clientY + 'px';
     });
-  });
+  }
 
-  /* ── Navbar shrink on scroll ── */
-  const navbar = document.getElementById('navbar');
+  /* ── Scroll Reveal ── */
+  const obs = new IntersectionObserver(entries => {
+    entries.forEach(en => { if (en.isIntersecting) en.target.classList.add('visible'); });
+  }, { threshold: 0.08 });
+  document.querySelectorAll('[data-reveal]').forEach(el => obs.observe(el));
+
+  /* ── Navbar Scroll ── */
+  const navInner = document.getElementById('navInner');
   window.addEventListener('scroll', () => {
-    navbar.style.top = window.scrollY > 60 ? '8px' : '18px';
+    if (!navInner) return;
+    if (window.scrollY > 60) {
+      navInner.style.background = 'rgba(13, 17, 23, 0.95)';
+      navInner.style.padding = '8px 18px';
+    } else {
+      navInner.style.background = 'var(--glass)';
+      navInner.style.padding = '10px 20px';
+    }
   }, { passive: true });
 
-  /* ── Active nav link highlight ── */
+  /* ── Active Nav Link on Scroll ── */
   const sections = document.querySelectorAll('section[id]');
   const navLinks = document.querySelectorAll('.nav-link');
-
-  const navObserver = new IntersectionObserver(entries => {
-    entries.forEach(e => {
-      if (e.isIntersecting) {
+  const sectionObs = new IntersectionObserver(entries => {
+    entries.forEach(en => {
+      if (en.isIntersecting) {
         navLinks.forEach(l => l.classList.remove('active'));
-        const active = document.querySelector(`.nav-link[href="#${e.target.id}"]`);
-        if (active) active.classList.add('active');
+        const match = document.querySelector(`.nav-link[href="#${en.target.id}"]`);
+        if (match) match.classList.add('active');
       }
     });
   }, { threshold: 0.4 });
+  sections.forEach(s => sectionObs.observe(s));
 
-  sections.forEach(s => navObserver.observe(s));
+  /* ── Hamburger Menu ── */
+  const hamburger = document.getElementById('hamburger');
+  const navDrawer  = document.getElementById('navDrawer');
+  if (hamburger && navDrawer) {
+    hamburger.addEventListener('click', () => {
+      const open = navDrawer.classList.toggle('open');
+      const bars = hamburger.querySelectorAll('span');
+      bars[0].style.transform = open ? 'translateY(7px) rotate(45deg)' : '';
+      bars[1].style.opacity   = open ? '0' : '1';
+      bars[2].style.transform = open ? 'translateY(-7px) rotate(-45deg)' : '';
+    });
+    navDrawer.querySelectorAll('a').forEach(a => {
+      a.addEventListener('click', () => {
+        navDrawer.classList.remove('open');
+        hamburger.querySelectorAll('span').forEach(s => { s.style.transform = ''; s.style.opacity = '1'; });
+      });
+    });
+  }
 
-  /* ── Scroll reveal ── */
-  document.querySelectorAll('[data-reveal]').forEach(el => {
-    new IntersectionObserver(([entry], obs) => {
-      if (entry.isIntersecting) {
-        el.classList.add('visible');
-        obs.disconnect();
-      }
-    }, { threshold: 0.1, rootMargin: '0px 0px -40px 0px' }).observe(el);
-  });
-
-  /* ── Hero parallax ── */
-  const heroImg = document.querySelector('.hero-img');
+  /* ── Hero Image Parallax ── */
+  const heroImg = document.getElementById('heroImg');
   window.addEventListener('scroll', () => {
     if (heroImg && window.scrollY < window.innerHeight) {
-      heroImg.style.transform = `scale(1) translateY(${window.scrollY * 0.18}px)`;
+      heroImg.style.transform = `scale(1.08) translateY(${window.scrollY * 0.12}px)`;
     }
   }, { passive: true });
 
-  /* ── Gallery tilt on hover ── */
-  document.querySelectorAll('.g-item').forEach(item => {
-    item.addEventListener('mousemove', e => {
-      const r = item.getBoundingClientRect();
-      const x = (e.clientX - r.left) / r.width - 0.5;
-      const y = (e.clientY - r.top) / r.height - 0.5;
-      item.style.transform = `perspective(700px) rotateX(${-y * 5}deg) rotateY(${x * 5}deg) scale(1.02)`;
+  /* ── Card 3D Tilt ── */
+  document.querySelectorAll('.b-card, .step').forEach(card => {
+    card.addEventListener('mousemove', e => {
+      const r  = card.getBoundingClientRect();
+      const xPct = ((e.clientX - r.left) / r.width - 0.5);
+      const yPct = ((e.clientY - r.top)  / r.height - 0.5);
+      card.style.transform = `perspective(800px) rotateX(${-yPct * 8}deg) rotateY(${xPct * 8}deg) translateY(-8px)`;
     });
-    item.addEventListener('mouseleave', () => { item.style.transform = ''; });
+    card.addEventListener('mouseleave', () => { card.style.transform = ''; });
+  });
+
+  /* ── Number Count-Up ── */
+  document.querySelectorAll('.stat-num').forEach(el => {
+    const raw = el.textContent.replace(/[^0-9]/g, '');
+    const target = parseInt(raw, 10);
+    if (!target) return;
+    const suffix = el.querySelector('span')?.textContent || '';
+    let start = null;
+    const duration = 1400;
+    const count = ts => {
+      if (!start) start = ts;
+      const progress = Math.min((ts - start) / duration, 1);
+      const eased = 1 - Math.pow(1 - progress, 4);
+      el.innerHTML = Math.floor(eased * target) + (suffix ? `<span>${suffix}</span>` : '');
+      if (progress < 1) requestAnimationFrame(count);
+    };
+    const counterObs = new IntersectionObserver(entries => {
+      if (entries[0].isIntersecting) {
+        requestAnimationFrame(count);
+        counterObs.disconnect();
+      }
+    }, { threshold: 0.5 });
+    counterObs.observe(el);
   });
 
 });

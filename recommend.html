@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Recommendation Engine – Farmlytics</title>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="style.css"/>
+</head>
+<body class="rec-body">
+
+<!-- ═══════════ NAVBAR ═══════════ -->
+<nav class="navbar">
+  <div class="nav-wrap glass">
+    <a href="index.html" class="nav-logo">FARMLYTICS</a>
+    <ul class="nav-links">
+      <li><a href="index.html#home" class="nav-link">Home</a></li>
+      <li><a href="index.html#about" class="nav-link">About</a></li>
+      <li><a href="index.html#services" class="nav-link">Services</a></li>
+    </ul>
+    <a href="index.html" class="nav-btn">Home <span>→</span></a>
+  </div>
+</nav>
+
+<!-- ═══════════ HERO ═══════════ -->
+<section class="hero" style="min-height: 70vh;">
+  <div class="orb orb-1"></div>
+  <div class="orb orb-2"></div>
+  
+  <div style="max-width: 800px; margin: 0 auto; text-align: center; z-index: 2;" data-reveal>
+    <span class="tag-pill">AI Engine</span>
+    <h1 class="hero-heading gradient-text">Smart Crop Discovery</h1>
+    <p style="color: var(--text-muted); font-size: 18px; max-width: 600px; margin: 0 auto;">Enter your soil and climate parameters below to discover the most compatible crops for your field.</p>
+  </div>
+</section>
+
+<!-- ═══════════ FORM SECTION ═══════════ -->
+<section style="padding-top: 0;">
+  <div class="rec-wrap">
+    <!-- Sidebar info -->
+    <div class="rec-panel" data-reveal>
+      <div class="card glass">
+        <h3>Parameter Guide</h3>
+        <p>Ensure accuracy by entering valid field test data.</p>
+        <div style="display: flex; flex-direction: column; gap: 16px;">
+          <div style="font-size: 13px; color: var(--text-muted);">
+            <strong style="color: var(--primary);">N-P-K:</strong> Nitrogen, Phosphorus, Potassium levels in soil.
+          </div>
+          <div style="font-size: 13px; color: var(--text-muted);">
+            <strong style="color: var(--primary);">pH:</strong> Soil acidity (0-14 scale).
+          </div>
+          <div style="font-size: 13px; color: var(--text-muted);">
+            <strong style="color: var(--primary);">Climate:</strong> Temperature, Humidity, and Rainfall averages.
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Main Form -->
+    <div data-reveal data-delay="1">
+      <div class="rec-form-card glass">
+        <form id="cropForm">
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 24px;">
+            <div class="rec-field">
+              <label>Nitrogen (N) <span id="valN" style="color: var(--primary);">0</span></label>
+              <input type="range" class="rec-slider" id="n" min="0" max="140" value="0"/>
+            </div>
+            <div class="rec-field">
+              <label>Phosphorus (P) <span id="valP" style="color: var(--primary);">0</span></label>
+              <input type="range" class="rec-slider" id="p" min="5" max="145" value="5"/>
+            </div>
+            <div class="rec-field">
+              <label>Potassium (K) <span id="valK" style="color: var(--primary);">0</span></label>
+              <input type="range" class="rec-slider" id="k" min="5" max="205" value="5"/>
+            </div>
+            <div class="rec-field">
+              <label>Temperature (°C) <span id="valT" style="color: var(--primary);">0</span></label>
+              <input type="range" class="rec-slider" id="temp" min="8" max="45" step="0.1" value="8"/>
+            </div>
+            <div class="rec-field">
+              <label>Humidity (%) <span id="valH" style="color: var(--primary);">0</span></label>
+              <input type="range" class="rec-slider" id="hum" min="14" max="100" step="0.1" value="14"/>
+            </div>
+            <div class="rec-field">
+              <label>pH Level <span id="valPH" style="color: var(--primary);">0</span></label>
+              <input type="range" class="rec-slider" id="ph" min="3.5" max="10" step="0.1" value="3.5"/>
+            </div>
+            <div class="rec-field" style="grid-column: span 2;">
+              <label>Rainfall (mm) <span id="valR" style="color: var(--primary);">0</span></label>
+              <input type="range" class="rec-slider" id="rain" min="20" max="300" step="0.1" value="20"/>
+            </div>
+          </div>
+          <button type="submit" class="rec-btn" id="submitBtn">Get Recommendation</button>
+        </form>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════ RESULTS ═══════════ -->
+<section id="resultsSection" style="display: none; padding-top: 40px;">
+  <div style="max-width: 1000px; margin: 0 auto;">
+    <div id="resultsContent"></div>
+    <div style="text-align: center; margin-top: 40px;">
+      <button onclick="location.reload()" class="nav-btn">Try New Data</button>
+    </div>
+  </div>
+</section>
+
+<!-- Loading Overlay -->
+<div id="loadingOverlay" class="rec-loading-overlay">
+  <div style="text-align: center;">
+    <div class="rec-loading-ring"></div>
+    <p style="color: #fff; font-weight: 600;">Processing Field Data...</p>
+    <span style="color: var(--text-muted); font-size: 13px;">AI is calculating optimal clusters</span>
+  </div>
+</div>
+
+<script src="script.js"></script>
+<script src="recommend.js"></script>
+</body>
+</html>
