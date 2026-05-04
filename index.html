@@ -4,40 +4,34 @@
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Farmlytics – AI-Powered Crop Intelligence</title>
-  <meta name="description" content="Farmlytics helps farmers choose the right crop at the right time using AI-driven insights from soil, weather, and seasonal data."/>
+  <meta name="description" content="Farmlytics: AI crop recommendation and supply chain profiling for smarter, more sustainable farming."/>
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet"/>
   <link rel="stylesheet" href="style.css"/>
 </head>
 <body>
 
-<!-- Cursor Glow -->
 <div class="cursor-glow" id="cursorGlow"></div>
 
 <!-- ═══════════ NAVBAR ═══════════ -->
 <nav class="navbar" id="navbar">
   <div class="nav-inner" id="navInner">
     <a href="#home" class="nav-logo">FARMLYTICS</a>
-
     <ul class="nav-links" id="navLinks">
       <li><a href="#home"     class="nav-link active">Home</a></li>
-      <li><a href="#about"    class="nav-link">About</a></li>
-      <li><a href="#services" class="nav-link">Services</a></li>
+      <li><a href="#features" class="nav-link">Features</a></li>
       <li><a href="#how"      class="nav-link">How It Works</a></li>
     </ul>
-
-    <a href="recommend.html" class="nav-cta">Get Recommendation</a>
-
+    <a href="recommend.html" class="nav-cta">Try Now →</a>
     <button class="hamburger" id="hamburger" aria-label="Menu">
       <span></span><span></span><span></span>
     </button>
   </div>
-
   <div class="nav-drawer" id="navDrawer">
     <a href="#home">Home</a>
-    <a href="#about">About</a>
-    <a href="#services">Services</a>
+    <a href="#features">Features</a>
     <a href="#how">How It Works</a>
-    <a href="recommend.html" style="color: var(--green); font-weight: 600;">Get Recommendation →</a>
+    <a href="recommend.html" style="color:var(--green);font-weight:700;">Crop Recommendation →</a>
+    <a href="supply-chain.html" style="color:#ff9800;font-weight:700;">Supply Chain →</a>
   </div>
 </nav>
 
@@ -47,31 +41,29 @@
   <div class="orb orb-2"></div>
   <div class="hero-grid"></div>
 
-  <!-- Left: Text -->
   <div class="hero-text">
-
     <div data-reveal>
       <div class="hero-label">
         <span class="hero-label-dot"></span>
-        Smart Farming AI
+        AI-Powered Agriculture Platform
       </div>
     </div>
 
     <h1 class="hero-heading" data-reveal data-delay="1">
-      Intelligent<br/>Crop Picks for<br/><span class="accent">Bigger Yields</span>
+      Smarter Farming<br/>Starts with<br/><span class="accent">Better Data</span>
     </h1>
 
     <p class="hero-desc" data-reveal data-delay="2">
-      Analyze soil nutrients, pH, temperature and rainfall to discover the optimal crop for your field — powered by machine learning.
+      Farmlytics uses machine learning to recommend the perfect crop for your soil and reveal the optimal supply chain strategy — all from a single field analysis.
     </p>
 
     <div class="hero-actions" data-reveal data-delay="3">
       <a href="recommend.html" class="btn-primary">
-        Try the Engine
-        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+        Get Crop Recommendation
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
       </a>
-      <a href="#about" class="btn-secondary">
-        Learn More <span class="btn-arrow">↓</span>
+      <a href="supply-chain.html" class="btn-secondary">
+        Explore Supply Chain <span class="btn-arrow">→</span>
       </a>
     </div>
 
@@ -81,135 +73,115 @@
         <div class="stat-label">Crop Varieties</div>
       </div>
       <div class="stat-item">
-        <div class="stat-num">90<span>%</span></div>
-        <div class="stat-label">Accuracy Rate</div>
+        <div class="stat-num">3</div>
+        <div class="stat-label">Supply Chain Profiles</div>
       </div>
       <div class="stat-item">
         <div class="stat-num">7</div>
         <div class="stat-label">Input Parameters</div>
       </div>
     </div>
-
   </div>
 
-  <!-- Right: Image -->
   <div class="hero-visual">
-    <img
-      src="https://images.unsplash.com/photo-1625246333195-78d9c38ad449?w=1400&q=85"
-      alt="Aerial view of crop fields"
-      id="heroImg"
-    />
+    <img src="https://images.unsplash.com/photo-1625246333195-78d9c38ad449?w=1400&q=85" alt="Crop fields" id="heroImg"/>
     <div class="hero-visual-overlay"></div>
-
-    <!-- Floating info badge -->
     <div class="hero-badge">
       <div class="badge-icon">🌾</div>
       <div class="badge-text">
         <strong>AI Analyzed</strong>
-        <small>Real-time soil insights</small>
+        <small>Real-time field insights</small>
       </div>
     </div>
   </div>
 </section>
 
-<!-- ═══════════ ABOUT ═══════════ -->
-<section class="about-section" id="about">
-  <div class="about-inner">
-
-    <div data-reveal>
-      <span class="section-tag">Our Mission</span>
-    </div>
-
-    <div data-reveal data-delay="1">
-      <h2 class="about-heading">
-        We help farmers choose the right crop at the right time — using data-driven insights from soil nutrients, weather conditions, and seasonal patterns.
-      </h2>
-      <p class="section-sub" style="margin-top: 24px;">
-        By combining Gaussian Mixture Models with a curated agricultural dataset, Farmlytics clusters similar soil profiles and maps them to the crops that thrive best under those conditions.
-      </p>
-    </div>
-
-  </div>
-</section>
-
-<!-- ═══════════ SERVICES ═══════════ -->
-<section class="services-section" id="services">
+<!-- ═══════════ FEATURES ═══════════ -->
+<section class="services-section" id="features">
   <div class="services-inner">
-
     <div class="services-header">
       <div data-reveal>
-        <span class="section-tag">Our Services</span>
-        <h2 class="section-title">Agriculture<br/>Reimagined with AI</h2>
-      </div>
-      <div data-reveal data-delay="1">
-        <a href="recommend.html" class="btn-primary" style="white-space: nowrap;">
-          Try Engine →
-        </a>
+        <span class="section-tag">Two Powerful Tools</span>
+        <h2 class="section-title">Everything You Need<br/>to Grow Smarter</h2>
       </div>
     </div>
 
-    <div class="bento">
-      <div class="b-card" data-reveal>
+    <div class="bento" style="grid-template-columns: 1fr 1fr; gap: 28px;">
+
+      <!-- Feature 1: Crop Recommendation -->
+      <div class="b-card feature-card" data-reveal data-delay="1" onclick="location.href='recommend.html'">
         <div class="b-card-img">
-          <img src="https://images.unsplash.com/photo-1464226184884-fa280b87c399?w=800&q=80" alt="Crop Recommendation"/>
+          <img src="https://images.unsplash.com/photo-1464226184884-fa280b87c399?w=800&q=80" alt="Crop fields"/>
         </div>
         <div class="b-card-body">
+          <div class="feature-icon-row">
+            <span class="feature-num">01</span>
+            <span class="b-tag">Random Forest AI</span>
+          </div>
           <h3>Crop Recommendation</h3>
-          <p>Get AI-powered crop suggestions based on your soil's N, P, K and pH values matched against real agricultural data.</p>
-          <span class="b-tag">AI Engine</span>
+          <p>Input your soil's NPK values, pH, temperature, humidity, and rainfall. Our Random Forest model analyzes 22 crop varieties and returns the best matches ranked by confidence.</p>
+          <div class="feature-list">
+            <div class="feature-list-item">✓ Top 3 crops with confidence scores</div>
+            <div class="feature-list-item">✓ Water & seasonal requirements</div>
+            <div class="feature-list-item">✓ Growth period estimates</div>
+          </div>
+          <a href="recommend.html" class="btn-primary" style="margin-top: 20px; display: inline-flex;">
+            Recommend a Crop →
+          </a>
         </div>
       </div>
 
-      <div class="b-card" data-reveal data-delay="1">
+      <!-- Feature 2: Supply Chain -->
+      <div class="b-card feature-card" data-reveal data-delay="2" onclick="location.href='supply-chain.html'" style="--feature-accent: #ff9800;">
         <div class="b-card-img">
-          <img src="https://images.unsplash.com/photo-1504701954957-2010ec3bcec1?w=800&q=80" alt="Climate Analysis"/>
+          <img src="https://images.unsplash.com/photo-1586528116311-ad8dd3c8310d?w=800&q=80" alt="Supply chain logistics"/>
         </div>
         <div class="b-card-body">
-          <h3>Climate Context</h3>
-          <p>Real-time weather integration — temperature, humidity, and rainfall data feed directly into the recommendation model.</p>
-          <span class="b-tag">Weather API</span>
+          <div class="feature-icon-row">
+            <span class="feature-num" style="background:rgba(255,152,0,0.1); border-color:rgba(255,152,0,0.25); color:#ff9800;">02</span>
+            <span class="b-tag" style="background:rgba(255,152,0,0.1); border-color:rgba(255,152,0,0.25); color:#ff9800;">KMeans Clustering</span>
+          </div>
+          <h3>Supply Chain Profile</h3>
+          <p>Using the same field parameters, our KMeans model clusters your farm into one of three supply chain archetypes and provides a full logistics strategy.</p>
+          <div class="feature-list">
+            <div class="feature-list-item" style="color:rgba(255,152,0,0.8);">✓ Local, Regional, or Export profile</div>
+            <div class="feature-list-item" style="color:rgba(255,152,0,0.8);">✓ Transport & storage recommendations</div>
+            <div class="feature-list-item" style="color:rgba(255,152,0,0.8);">✓ Market channels & margin estimates</div>
+          </div>
+          <a href="supply-chain.html" class="btn-primary" style="margin-top: 20px; display: inline-flex; background: linear-gradient(135deg,#e65100,#ff9800); box-shadow: 0 6px 20px rgba(255,152,0,0.3);">
+            Analyze Supply Chain →
+          </a>
         </div>
       </div>
 
-      <div class="b-card" data-reveal data-delay="2">
-        <div class="b-card-img">
-          <img src="https://images.unsplash.com/photo-1416879595882-3373a0480b5b?w=800&q=80" alt="Soil Health"/>
-        </div>
-        <div class="b-card-body">
-          <h3>Soil Health Insights</h3>
-          <p>Understand your field's composition with detailed NPK analysis, pH profiling, and cluster-based soil fingerprinting.</p>
-          <span class="b-tag">Soil Analysis</span>
-        </div>
-      </div>
     </div>
-
   </div>
 </section>
 
 <!-- ═══════════ HOW IT WORKS ═══════════ -->
 <section class="how-section" id="how">
   <div class="how-inner">
-
     <div class="how-header" data-reveal>
       <span class="section-tag">Process</span>
-      <h2 class="section-title">Three Steps to<br/>Smarter Farming</h2>
+      <h2 class="section-title">One Input,<br/>Two Powerful Insights</h2>
+      <p class="section-sub" style="max-width: 540px; margin: 16px auto 0;">Enter your 7 field parameters once and unlock both crop recommendations and supply chain strategy simultaneously.</p>
     </div>
 
     <div class="steps">
       <div class="step" data-reveal data-delay="1">
         <div class="step-num">01</div>
-        <h4>Enter Your Soil Data</h4>
-        <p>Provide Nitrogen, Phosphorus, Potassium, and pH values from your field tests. Takes less than a minute.</p>
+        <h4>Collect Field Data</h4>
+        <p>Gather soil test results for N, P, K, and pH. Note your region's average temperature, humidity, and annual rainfall from local weather records.</p>
       </div>
       <div class="step" data-reveal data-delay="2">
         <div class="step-num">02</div>
-        <h4>Add Climate Parameters</h4>
-        <p>Input your region's temperature, humidity, and average rainfall. Our model uses this to refine crop suitability.</p>
+        <h4>Run the AI Models</h4>
+        <p>Our Random Forest classifier predicts the best crop, while the KMeans model simultaneously clusters your farm into a supply chain archetype.</p>
       </div>
       <div class="step" data-reveal data-delay="3">
         <div class="step-num">03</div>
-        <h4>Get Your Recommendations</h4>
-        <p>The AI clusters your data into a soil profile and returns the highest-compatibility crops with confidence scores.</p>
+        <h4>Act on the Insights</h4>
+        <p>Get ranked crop options with confidence scores plus a full logistics plan — including transport mode, storage type, market channels, and profit margin estimates.</p>
       </div>
     </div>
 
@@ -219,53 +191,49 @@
 <!-- ═══════════ CTA ═══════════ -->
 <section class="cta-section">
   <div class="cta-inner" data-reveal>
-    <span class="section-tag">Ready to Start?</span>
-    <h2 class="section-title">Turn your field data into<br/>a smarter crop plan</h2>
-    <p class="section-sub">
-      No signup required. Just enter your soil and climate values to get instant, AI-powered crop guidance.
-    </p>
-    <a href="recommend.html" class="btn-primary" style="margin: 0 auto;">
-      Launch the Engine
-      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
-    </a>
+    <span class="section-tag">Start Now</span>
+    <h2 class="section-title">Ready to optimize<br/>your farm strategy?</h2>
+    <p class="section-sub">No signup. Enter your field data and get both crop and supply chain insights in seconds.</p>
+    <div style="display:flex; gap:16px; justify-content:center; flex-wrap:wrap; margin-top:32px;">
+      <a href="recommend.html" class="btn-primary">
+        🌾 Recommend a Crop
+      </a>
+      <a href="supply-chain.html" class="btn-primary" style="background:linear-gradient(135deg,#e65100,#ff9800); box-shadow:0 6px 20px rgba(255,152,0,0.3);">
+        🚛 Analyze Supply Chain
+      </a>
+    </div>
   </div>
 </section>
 
 <!-- ═══════════ FOOTER ═══════════ -->
-<footer class="footer" id="contact">
+<footer class="footer">
   <div class="footer-inner">
     <div class="footer-brand">
       <span class="footer-logo-text">FARMLYTICS</span>
-      <p>Driving sustainable agriculture through precision AI and data intelligence.</p>
+      <p>AI-powered crop intelligence for sustainable, profitable agriculture.</p>
       <a href="mailto:official.tharunteja@gmail.com" class="footer-email">official.tharunteja@gmail.com</a>
     </div>
-
     <div class="footer-col">
       <div class="footer-col-title">Platform</div>
       <a href="#home">Home</a>
-      <a href="#about">About</a>
-      <a href="#services">Services</a>
+      <a href="#features">Features</a>
       <a href="recommend.html">Crop Engine</a>
+      <a href="supply-chain.html">Supply Chain</a>
     </div>
-
     <div class="footer-col">
       <div class="footer-col-title">Resources</div>
       <a href="#how">How It Works</a>
-      <a href="#">Documentation</a>
-      <a href="#">API Reference</a>
+      <a href="#">API Docs</a>
     </div>
-
     <div class="footer-col">
-      <div class="footer-col-title">Contact</div>
-      <a href="mailto:official.tharunteja@gmail.com">Email Us</a>
+      <div class="footer-col-title">Connect</div>
+      <a href="mailto:official.tharunteja@gmail.com">Email</a>
       <a href="https://github.com" target="_blank">GitHub</a>
-      <a href="https://linkedin.com" target="_blank">LinkedIn</a>
     </div>
   </div>
-
   <div class="footer-bottom">
-    <p>© 2026 Farmlytics. All Rights Reserved.</p>
-    <p>Built with AI · Sustainable Agriculture Platform</p>
+    <p>© 2026 Farmlytics · Built with AI</p>
+    <p>RandomForest + KMeans Agriculture Intelligence</p>
   </div>
 </footer>
 

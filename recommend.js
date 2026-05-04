@@ -217,7 +217,7 @@ document.addEventListener('DOMContentLoaded', () => {
                          err.message.toLowerCase().includes('network');
 
       if (isFileProt) {
-        showToast('⚠️ Open via http://localhost:8080, not as a file');
+        showToast('Open via http://localhost:8080, not as a file');
       } else if (isNetwork) {
         showToast('⚡ Backend offline — run: python app.py');
       } else {

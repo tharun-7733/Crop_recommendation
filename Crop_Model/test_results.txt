@@ -1,5 +1,0 @@
-Input Data -> Recommended Crop (Cluster)
---------------------------------------------------
-Input: {'N': 90, 'P': 42, 'K': 43, 'temp': 20, 'hum': 82, 'ph': 6.5, 'rain': 202} -> Recommendation: rice (Cluster 20)
-Input: {'N': 20, 'P': 130, 'K': 200, 'temp': 25, 'hum': 80, 'ph': 6.0, 'rain': 70} -> Recommendation: grapes (Cluster 17)
-Input: {'N': 40, 'P': 70, 'K': 80, 'temp': 18, 'hum': 15, 'ph': 7.0, 'rain': 80} -> Recommendation: chickpea (Cluster 14)

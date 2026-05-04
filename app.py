@@ -1,12 +1,12 @@
 """
-CropWise — Flask API for crop prediction.
-Loads the GMM clustering model + scaler, accepts soil/environment
-parameters, and returns recommended crops.
+Farmlytics – Flask API
+  POST /predict       → Crop recommendation (RandomForest)
+  POST /supply-chain  → Supply chain profile (KMeans)
+  GET  /health        → Status check
 """
 
 import os
 import joblib
-import pandas as pd
 import numpy as np
 from flask import Flask, request, jsonify
 from flask_cors import CORS
@@ -14,89 +14,177 @@ from flask_cors import CORS
 app = Flask(__name__)
 CORS(app)
 
-# ── Load model artifacts ────────────────────────────────────────────
-BASE = os.path.dirname(os.path.abspath(__file__))
-MODELS = os.path.join(BASE, "Crop_Model")
+BASE   = os.path.dirname(os.path.abspath(__file__))
+MODELS = os.path.join(BASE, "models")
 
-scaler = joblib.load(os.path.join(MODELS, "scaler.pkl"))
-model  = joblib.load(os.path.join(MODELS, "crop_clustering_model.pkl"))
+# ── Load artifacts ───────────────────────────────────────────────────
+rec_scaler  = joblib.load(os.path.join(MODELS, "crop_recommend_scaler.pkl"))
+rec_model   = joblib.load(os.path.join(MODELS, "crop_recommendation_model.pkl"))
 
-# ── Build cluster → crop mapping ────────────────────────────────────
-cluster_df = pd.read_csv(os.path.join(MODELS, "cluster_mapping.csv"))
-CLUSTER_TO_CROPS = {}
-for _, row in cluster_df.iterrows():
-    cid = int(row["gmm_(new)_labels"])
-    crop = str(row["label"]).strip()
-    if cid not in CLUSTER_TO_CROPS:
-        CLUSTER_TO_CROPS[cid] = []
-    if crop not in CLUSTER_TO_CROPS[cid]:
-        CLUSTER_TO_CROPS[cid].append(crop)
+sc_scaler   = joblib.load(os.path.join(MODELS, "supply_chain_scaler.pkl"))
+sc_model    = joblib.load(os.path.join(MODELS, "supply_chain_kmeans_model.pkl"))
 
-print(f"[CropWise] Loaded {len(CLUSTER_TO_CROPS)} clusters")
+print(f"[Farmlytics] Crop classes : {list(rec_model.classes_)}")
+print(f"[Farmlytics] SC clusters  : {sc_model.n_clusters}")
 
-
-# ── Crop metadata for enriched responses ────────────────────────────
+# ── Crop metadata ────────────────────────────────────────────────────
 CROP_META = {
-    "rice":         {"season": ["kharif"], "water": "High", "period": "120-150 days"},
-    "maize":        {"season": ["kharif"], "water": "Medium", "period": "80-110 days"},
-    "chickpea":     {"season": ["rabi"], "water": "Low", "period": "90-120 days"},
-    "kidneybeans":  {"season": ["rabi"], "water": "Medium", "period": "90-120 days"},
-    "pigeonpeas":   {"season": ["kharif"], "water": "Low", "period": "120-180 days"},
-    "mothbeans":    {"season": ["kharif"], "water": "Low", "period": "60-90 days"},
-    "mungbean":     {"season": ["kharif", "zaid"], "water": "Low", "period": "60-75 days"},
-    "blackgram":    {"season": ["kharif", "rabi"], "water": "Low", "period": "80-90 days"},
-    "lentil":       {"season": ["rabi"], "water": "Low", "period": "100-120 days"},
-    "pomegranate":  {"season": ["kharif", "rabi"], "water": "Low", "period": "150-180 days"},
-    "banana":       {"season": ["kharif"], "water": "High", "period": "270-365 days"},
-    "mango":        {"season": ["kharif"], "water": "Medium", "period": "100-150 days"},
-    "grapes":       {"season": ["rabi"], "water": "Medium", "period": "150-180 days"},
-    "watermelon":   {"season": ["zaid"], "water": "High", "period": "80-110 days"},
-    "muskmelon":    {"season": ["zaid"], "water": "Medium", "period": "70-90 days"},
-    "apple":        {"season": ["rabi"], "water": "Medium", "period": "150-180 days"},
-    "orange":       {"season": ["rabi"], "water": "Medium", "period": "240-365 days"},
-    "papaya":       {"season": ["kharif"], "water": "Medium", "period": "270-330 days"},
-    "coconut":      {"season": ["kharif"], "water": "High", "period": "365+ days"},
-    "cotton":       {"season": ["kharif"], "water": "Medium", "period": "150-180 days"},
-    "jute":         {"season": ["kharif"], "water": "High", "period": "120-150 days"},
-    "coffee":       {"season": ["kharif", "rabi"], "water": "Medium", "period": "365+ days"},
+    "rice":        {"season":["Kharif"],            "water":"High",   "period":"120-150 days", "emoji":"🌾"},
+    "maize":       {"season":["Kharif"],            "water":"Medium", "period":"80-110 days",  "emoji":"🌽"},
+    "chickpea":    {"season":["Rabi"],              "water":"Low",    "period":"90-120 days",  "emoji":"🫘"},
+    "kidneybeans": {"season":["Rabi"],              "water":"Medium", "period":"90-120 days",  "emoji":"🫘"},
+    "pigeonpeas":  {"season":["Kharif"],            "water":"Low",    "period":"120-180 days", "emoji":"🌿"},
+    "mothbeans":   {"season":["Kharif"],            "water":"Low",    "period":"60-90 days",   "emoji":"🌱"},
+    "mungbean":    {"season":["Kharif","Zaid"],     "water":"Low",    "period":"60-75 days",   "emoji":"🟢"},
+    "blackgram":   {"season":["Kharif","Rabi"],     "water":"Low",    "period":"80-90 days",   "emoji":"⚫"},
+    "lentil":      {"season":["Rabi"],              "water":"Low",    "period":"100-120 days", "emoji":"🟤"},
+    "pomegranate": {"season":["Kharif","Rabi"],     "water":"Low",    "period":"150-180 days", "emoji":"🍎"},
+    "banana":      {"season":["Kharif"],            "water":"High",   "period":"270-365 days", "emoji":"🍌"},
+    "mango":       {"season":["Kharif"],            "water":"Medium", "period":"100-150 days", "emoji":"🥭"},
+    "grapes":      {"season":["Rabi"],              "water":"Medium", "period":"150-180 days", "emoji":"🍇"},
+    "watermelon":  {"season":["Zaid"],              "water":"High",   "period":"80-110 days",  "emoji":"🍉"},
+    "muskmelon":   {"season":["Zaid"],              "water":"Medium", "period":"70-90 days",   "emoji":"🍈"},
+    "apple":       {"season":["Rabi"],              "water":"Medium", "period":"150-180 days", "emoji":"🍎"},
+    "orange":      {"season":["Rabi"],              "water":"Medium", "period":"240-365 days", "emoji":"🍊"},
+    "papaya":      {"season":["Kharif"],            "water":"Medium", "period":"270-330 days", "emoji":"🧡"},
+    "coconut":     {"season":["Kharif"],            "water":"High",   "period":"365+ days",    "emoji":"🥥"},
+    "cotton":      {"season":["Kharif"],            "water":"Medium", "period":"150-180 days", "emoji":"🌸"},
+    "jute":        {"season":["Kharif"],            "water":"High",   "period":"120-150 days", "emoji":"🌿"},
+    "coffee":      {"season":["Kharif","Rabi"],     "water":"Medium", "period":"365+ days",    "emoji":"☕"},
+}
+
+# ── Supply chain cluster profiles (from notebook analysis) ───────────
+SC_PROFILES = {
+    0: {
+        "name":        "Premium High-Performers",
+        "icon":        "💎",
+        "color":       "#4caf50",
+        "label":       "Cluster 0",
+        "desc":        "High price-per-kg with the highest revenue output. These are top-tier products that drive value despite potentially lower volume. Prioritize quality retention and premium market access.",
+        "strategy":    "Quality-first, premium pricing",
+        "inventory":   "Low — sell quickly at peak freshness",
+        "sell_through": "Strong — demand matches supply",
+        "margin":      "High (65–80%)",
+        "channels":    ["Organic retailers", "Export houses", "Specialty markets", "Direct B2B buyers"],
+        "tips": [
+            "Maintain strict quality grading — premium buyers pay for consistency",
+            "Explore direct contracts with exporters or specialty food brands",
+            "Invest in certification (organic, GlobalGAP) to command higher prices",
+            "Use cold-chain to preserve quality and extend shelf life"
+        ],
+        "warning": None
+    },
+    1: {
+        "name":        "Overstock / Slow-Moving",
+        "icon":        "⚠️",
+        "color":       "#ff9800",
+        "label":       "Cluster 1",
+        "desc":        "High inventory ratio with low sell-through rate. These products are sitting in storage and tying up capital. Immediate action needed to reduce holding costs and free working capital.",
+        "strategy":    "Volume reduction or aggressive promotion",
+        "inventory":   "High ⚠️ — capital is being tied up in unsold stock",
+        "sell_through": "Low — products are moving slower than they arrive",
+        "margin":      "Eroding (30–45%) due to holding costs",
+        "channels":    ["Bulk processors", "Food industry buyers", "Wholesale mandis", "Government procurement"],
+        "tips": [
+            "Reduce supply volume in next season to rebalance inventory",
+            "Run promotional pricing or bulk-deal offers to clear stock",
+            "Explore processing channels (e.g., flour mills, canneries) for unsold produce",
+            "Negotiate flexible offtake agreements instead of fixed-volume contracts"
+        ],
+        "warning": "⚠️ High inventory levels detected. Consider promotional strategies or supply reduction to free capital."
+    },
+    2: {
+        "name":        "Fast-Moving Essentials",
+        "icon":        "⚡",
+        "color":       "#2196f3",
+        "label":       "Cluster 2",
+        "desc":        "High sell-through rate with low inventory ratio. These are efficient, high-turnover products being sold almost as fast as they are shipped — a sign of strong market demand.",
+        "strategy":    "Scale up supply and secure reliable offtake",
+        "inventory":   "Low — stock moves fast, minimal holding costs",
+        "sell_through": "Excellent — near real-time demand absorption",
+        "margin":      "Moderate (45–60%) with high volume upside",
+        "channels":    ["Local markets", "Quick-commerce platforms", "Institutional buyers", "Cooperatives"],
+        "tips": [
+            "Scale production to capture the strong demand — this is your growth opportunity",
+            "Lock in offtake agreements with institutional buyers for price stability",
+            "Minimize storage investment — focus on just-in-time supply",
+            "Explore quick-commerce and last-mile delivery partnerships"
+        ],
+        "warning": None
+    }
 }
 
 
+def extract_features(data):
+    """Extract and validate the 7-feature vector from request JSON."""
+    return np.array([[
+        float(data["N"]),
+        float(data["P"]),
+        float(data["K"]),
+        float(data["temperature"]),
+        float(data["humidity"]),
+        float(data["ph"]),
+        float(data["rainfall"]),
+    ]])
+
+
+# ── Routes ────────────────────────────────────────────────────────────
+
 @app.route("/predict", methods=["POST"])
 def predict():
-    """Accept soil/environment JSON → return crop recommendation."""
+    """Crop recommendation using RandomForest."""
     try:
-        data = request.get_json(force=True)
+        data     = request.get_json(force=True)
+        features = extract_features(data)
+        scaled   = rec_scaler.transform(features)
 
-        features = np.array([[
-            float(data["N"]),
-            float(data["P"]),
-            float(data["K"]),
-            float(data["temperature"]),
-            float(data["humidity"]),
-            float(data["ph"]),
-            float(data["rainfall"]),
-        ]])
+        # Top-3 crops by probability
+        proba       = rec_model.predict_proba(scaled)[0]
+        top3_idx    = proba.argsort()[-3:][::-1]
+        classes     = rec_model.classes_
+        primary     = classes[top3_idx[0]]
 
-        scaled = scaler.transform(features)
-        cluster = int(model.predict(scaled)[0])
-        crops = CLUSTER_TO_CROPS.get(cluster, ["Unknown"])
-
-        results = []
-        for c in crops:
-            meta = CROP_META.get(c, {})
-            results.append({
-                "name": c,
-                "season": meta.get("season", []),
-                "water": meta.get("water", "N/A"),
-                "period": meta.get("period", "N/A"),
+        recommendations = []
+        for idx in top3_idx:
+            crop = classes[idx]
+            meta = CROP_META.get(crop, {})
+            recommendations.append({
+                "name":        crop,
+                "confidence":  round(float(proba[idx]) * 100, 1),
+                "emoji":       meta.get("emoji", "🌱"),
+                "season":      meta.get("season", []),
+                "water":       meta.get("water", "N/A"),
+                "period":      meta.get("period", "N/A"),
             })
+
+        return jsonify({
+            "success":         True,
+            "primary":         primary,
+            "recommendations": recommendations,
+            "all_crops":       [
+                {"name": c, "confidence": round(float(p)*100,1), "emoji": CROP_META.get(c,{}).get("emoji","🌱")}
+                for c, p in sorted(zip(classes, proba), key=lambda x: -x[1])
+            ]
+        })
+
+    except Exception as e:
+        return jsonify({"success": False, "error": str(e)}), 400
+
+
+@app.route("/supply-chain", methods=["POST"])
+def supply_chain():
+    """Supply chain profile using KMeans clustering."""
+    try:
+        data     = request.get_json(force=True)
+        features = extract_features(data)
+        scaled   = sc_scaler.transform(features)
+        cluster  = int(sc_model.predict(scaled)[0])
+        profile  = SC_PROFILES.get(cluster, SC_PROFILES[0])
 
         return jsonify({
             "success": True,
             "cluster": cluster,
-            "primary": crops[0],
-            "recommendations": results,
+            "profile": profile,
         })
 
     except Exception as e:
@@ -105,7 +193,7 @@ def predict():
 
 @app.route("/health", methods=["GET"])
 def health():
-    return jsonify({"status": "ok"})
+    return jsonify({"status": "ok", "models": ["RandomForest", "KMeans"]})
 
 
 if __name__ == "__main__":

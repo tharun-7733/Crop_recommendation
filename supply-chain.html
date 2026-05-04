@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Supply Chain Profiler – Farmlytics</title>
+  <meta name="description" content="Discover your crop's supply chain profile — Premium, Overstock, or Fast-Moving — based on your field's soil and climate data."/>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="style.css"/>
+  <link rel="stylesheet" href="supply-chain.css"/>
+</head>
+<body class="sc-page">
+
+<div class="cursor-glow" id="cursorGlow"></div>
+
+<!-- ═══════════ NAVBAR ═══════════ -->
+<nav class="navbar" id="navbar">
+  <div class="nav-inner" id="navInner">
+    <a href="index.html" class="nav-logo">FARMLYTICS</a>
+    <ul class="nav-links">
+      <li><a href="index.html#home"     class="nav-link">Home</a></li>
+      <li><a href="recommend.html"      class="nav-link">Crop Engine</a></li>
+      <li><a href="supply-chain.html"   class="nav-link active">Supply Chain</a></li>
+    </ul>
+    <a href="recommend.html" class="nav-cta">Crop Recommendation →</a>
+  </div>
+</nav>
+
+<!-- ═══════════ HERO ═══════════ -->
+<section class="engine-hero sc-hero">
+  <div class="orb sc-orb-1"></div>
+  <div class="orb sc-orb-2"></div>
+  <div class="grid-lines"></div>
+
+  <div class="engine-hero-content" data-reveal>
+    <span class="section-tag" style="color:#ff9800; background:rgba(255,152,0,0.1); border-color:rgba(255,152,0,0.25);">Supply Chain Intelligence</span>
+    <h1>Know Your <span style="color:#ff9800;">Market Profile</span></h1>
+    <p>Enter your field parameters and our KMeans model will classify your crops into one of three supply chain archetypes — each with a tailored business strategy.</p>
+
+    <!-- Cluster legend pills -->
+    <div class="sc-legend" data-reveal data-delay="1">
+      <div class="sc-legend-pill" style="--lc:#4caf50">💎 Premium High-Performers</div>
+      <div class="sc-legend-pill" style="--lc:#ff9800">⚠️ Overstock / Slow-Moving</div>
+      <div class="sc-legend-pill" style="--lc:#2196f3">⚡ Fast-Moving Essentials</div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════ FORM SECTION ═══════════ -->
+<section class="engine-section" id="scFormSection">
+  <div class="engine-wrap">
+
+    <!-- Sidebar -->
+    <aside class="engine-sidebar">
+      <div class="progress-card" data-reveal>
+        <div class="progress-title">Form Completion</div>
+        <div class="progress-track">
+          <div class="progress-fill" id="progressFill" style="background: linear-gradient(90deg,#e65100,#ff9800);"></div>
+        </div>
+        <div class="progress-label" id="progressLabel">0 of 7 fields adjusted</div>
+      </div>
+
+      <div class="guide-card" data-reveal data-delay="1">
+        <div class="guide-card-title">What Will You Get?</div>
+
+        <div class="sc-what-card" style="--wc:#4caf50">
+          <div class="sc-what-icon">💎</div>
+          <div>
+            <strong>Cluster 0 — Premium</strong>
+            <p>High price-per-kg, strong revenue. Focus on quality and premium channels.</p>
+          </div>
+        </div>
+
+        <div class="sc-what-card" style="--wc:#ff9800">
+          <div class="sc-what-icon">⚠️</div>
+          <div>
+            <strong>Cluster 1 — Overstock</strong>
+            <p>High inventory, low sell-through. Action needed to free capital.</p>
+          </div>
+        </div>
+
+        <div class="sc-what-card" style="--wc:#2196f3">
+          <div class="sc-what-icon">⚡</div>
+          <div>
+            <strong>Cluster 2 — Fast-Moving</strong>
+            <p>High turnover, low inventory. Scale up to capture demand.</p>
+          </div>
+        </div>
+      </div>
+    </aside>
+
+    <!-- Form -->
+    <div data-reveal data-delay="1">
+      <div class="form-card">
+        <div class="form-card-header" style="border-left: 3px solid #ff9800;">
+          <h2>Enter Field Parameters</h2>
+          <p>The same 7 soil &amp; climate inputs used for crop recommendation also power this supply chain classifier</p>
+        </div>
+
+        <div class="form-body">
+          <form id="scForm">
+            <div class="fields-grid">
+
+              <!-- N -->
+              <div class="field">
+                <div class="field-label">
+                  <span><span class="field-dot" style="background:#4caf50;"></span>Nitrogen (N) <span class="field-unit">kg/ha</span></span>
+                  <span class="field-val" id="val-N" style="color:#ff9800;">0</span>
+                </div>
+                <input type="range" class="range-slider sc-slider" id="N" min="0" max="140" step="1" value="0" data-guide="guide-N"/>
+                <div class="field-bar"><div class="field-bar-fill" id="bar-N" style="background:#ff9800;"></div></div>
+              </div>
+
+              <!-- P -->
+              <div class="field">
+                <div class="field-label">
+                  <span><span class="field-dot" style="background:#66bb6a;"></span>Phosphorus (P) <span class="field-unit">kg/ha</span></span>
+                  <span class="field-val" id="val-P" style="color:#ff9800;">5</span>
+                </div>
+                <input type="range" class="range-slider sc-slider" id="P" min="5" max="145" step="1" value="5"/>
+                <div class="field-bar"><div class="field-bar-fill" id="bar-P" style="background:#ff9800;"></div></div>
+              </div>
+
+              <!-- K -->
+              <div class="field">
+                <div class="field-label">
+                  <span><span class="field-dot" style="background:#81c784;"></span>Potassium (K) <span class="field-unit">kg/ha</span></span>
+                  <span class="field-val" id="val-K" style="color:#ff9800;">5</span>
+                </div>
+                <input type="range" class="range-slider sc-slider" id="K" min="5" max="205" step="1" value="5"/>
+                <div class="field-bar"><div class="field-bar-fill" id="bar-K" style="background:#ff9800;"></div></div>
+              </div>
+
+              <!-- Temperature -->
+              <div class="field">
+                <div class="field-label">
+                  <span><span class="field-dot" style="background:#ffa726;"></span>Temperature <span class="field-unit">°C</span></span>
+                  <span class="field-val" id="val-temp" style="color:#ff9800;">8</span>
+                </div>
+                <input type="range" class="range-slider sc-slider" id="temperature" min="8" max="44" step="0.1" value="8"/>
+                <div class="field-bar"><div class="field-bar-fill" id="bar-temperature" style="background:#ff9800;"></div></div>
+              </div>
+
+              <!-- Humidity -->
+              <div class="field">
+                <div class="field-label">
+                  <span><span class="field-dot" style="background:#29b6f6;"></span>Humidity <span class="field-unit">%</span></span>
+                  <span class="field-val" id="val-hum" style="color:#ff9800;">14</span>
+                </div>
+                <input type="range" class="range-slider sc-slider" id="humidity" min="14" max="100" step="0.1" value="14"/>
+                <div class="field-bar"><div class="field-bar-fill" id="bar-humidity" style="background:#ff9800;"></div></div>
+              </div>
+
+              <!-- pH -->
+              <div class="field">
+                <div class="field-label">
+                  <span><span class="field-dot" style="background:#ab47bc;"></span>pH Level</span>
+                  <span class="field-val" id="val-ph" style="color:#ff9800;">3.5</span>
+                </div>
+                <input type="range" class="range-slider sc-slider" id="ph" min="3.5" max="9.9" step="0.1" value="3.5"/>
+                <div class="field-bar"><div class="field-bar-fill" id="bar-ph" style="background:#ff9800;"></div></div>
+              </div>
+
+              <!-- Rainfall -->
+              <div class="field field-full">
+                <div class="field-label">
+                  <span><span class="field-dot" style="background:#26c6da;"></span>Rainfall <span class="field-unit">mm / year</span></span>
+                  <span class="field-val" id="val-rain" style="color:#ff9800;">20</span>
+                </div>
+                <input type="range" class="range-slider sc-slider" id="rainfall" min="20" max="300" step="0.1" value="20"/>
+                <div class="field-bar"><div class="field-bar-fill" id="bar-rainfall" style="background:#ff9800;"></div></div>
+              </div>
+
+            </div>
+
+            <div class="form-actions">
+              <button type="button" class="btn-reset" id="scResetBtn">Reset All</button>
+              <button type="submit" class="btn-submit sc-submit" id="scSubmitBtn">
+                <span class="btn-label">Analyze Supply Chain Profile</span>
+                <div class="btn-spinner"></div>
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════ RESULTS SECTION ═══════════ -->
+<section class="sc-results-section" id="scResultsSection">
+  <div style="max-width: 1000px; margin: 0 auto;">
+
+    <!-- Profile Banner -->
+    <div class="sc-profile-banner" id="scProfileBanner">
+      <div class="sc-banner-left">
+        <div class="sc-profile-icon" id="scProfileIcon">💎</div>
+        <div>
+          <div class="sc-profile-label" id="scProfileLabel">Cluster 0</div>
+          <div class="sc-profile-name" id="scProfileName">Premium High-Performers</div>
+          <div class="sc-profile-desc" id="scProfileDesc"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Warning banner (shown for Cluster 1) -->
+    <div class="sc-warning-banner" id="scWarningBanner" style="display:none;">
+      <span class="sc-warning-icon">⚠️</span>
+      <span id="scWarningText"></span>
+    </div>
+
+    <!-- KPI Row -->
+    <div class="sc-kpi-row" id="scKpiRow"></div>
+
+    <!-- Channels -->
+    <div class="sc-grid-two">
+      <div class="sc-card">
+        <h3 class="sc-card-title">📦 Recommended Market Channels</h3>
+        <div class="sc-channels" id="scChannels"></div>
+      </div>
+      <div class="sc-card">
+        <h3 class="sc-card-title">💡 Action Tips</h3>
+        <div class="sc-tips" id="scTips"></div>
+      </div>
+    </div>
+
+    <!-- Field Parameters -->
+    <div class="sc-card" style="margin-top: 20px;">
+      <h3 class="sc-card-title">🌱 Your Field Parameters</h3>
+      <div class="soil-grid" id="scSoilGrid"></div>
+    </div>
+
+    <!-- Actions -->
+    <div class="result-actions" style="margin-top: 32px;">
+      <button class="btn-try-again" id="scTryAgainBtn">← Try Different Values</button>
+      <a href="recommend.html" class="btn-go-home" style="background: linear-gradient(135deg,var(--green-dim),var(--green)); box-shadow: 0 4px 16px var(--green-glow);">
+        Get Crop Recommendation →
+      </a>
+      <a href="index.html" class="btn-try-again">Back to Home</a>
+    </div>
+  </div>
+</section>
+
+<!-- Loading Overlay -->
+<div class="loading-overlay" id="scLoadingOverlay">
+  <div class="loading-box">
+    <div class="loading-ring" style="border-top-color:#ff9800;"></div>
+    <h3>Analyzing Supply Chain</h3>
+    <p>Running KMeans cluster prediction…</p>
+  </div>
+</div>
+
+<!-- Toast -->
+<div class="toast" id="scToast">
+  <span class="toast-icon">⚠️</span>
+  <span id="scToastMsg">Error</span>
+</div>
+
+<script src="script.js"></script>
+<script src="supply-chain.js"></script>
+</body>
+</html>
