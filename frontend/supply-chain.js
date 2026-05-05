@@ -1,7 +1,7 @@
 /* supply-chain.js */
 document.addEventListener('DOMContentLoaded', () => {
 
-  const API = 'http://127.0.0.1:5000/supply-chain';
+  const API = '/supply-chain';
 
   const TIERS = {
     0: { label: 'Tier 1', name: 'Premium High-Performers', color: '#4caf50', badge: 'T1' },

@@ -6,7 +6,7 @@ document.addEventListener('DOMContentLoaded', () => {
     console.warn('[Farmlytics] Running from file:// — fetch to localhost will be blocked by CORS. Open via http://localhost:8080');
   }
 
-  const API = 'http://127.0.0.1:5000/predict';
+  const API = '/predict';
 
   const CROP_ICONS = {
     rice:'🌾', maize:'🌽', chickpea:'🫘', kidneybeans:'🫘', pigeonpeas:'🌿',
